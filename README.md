@@ -1,38 +1,37 @@
-# Kiếp Nhân Sinh (Vietnamese Life Simulator)
+# Làm Cha Mẹ (Vietnamese Family & Life Simulator)
 
-> **"Một lần sinh ra. Vạn ngã rẽ. Mỗi lựa chọn, một số phận."**
+> **"Từ ngã rẽ tuổi 18 đến hành trình hôn nhân và nuôi con trưởng thành."**
 
-**Kiếp Nhân Sinh** là tựa game web mô phỏng cuộc đời theo từng năm (Text-based RPG Life Simulator), lấy bối cảnh xã hội, văn hóa và con người Việt Nam hiện đại. Người chơi sẽ đồng hành cùng nhân vật từ tiếng khóc chào đời, qua tuổi thơ êm đềm, những kì thi bước ngoặt (vào lớp 10, đại học), chọn nghề lập nghiệp, tình duyên, gia đình cho đến những năm tháng tuổi già.
-
-Dự án được xây dựng với mục tiêu nâng cấp toàn diện trải nghiệm thị giác (UI/UX), cấu trúc mã nguồn hiện đại và hệ thống mô phỏng thông minh.
+**Làm Cha Mẹ** là tựa game web mô phỏng cuộc đời và gia đình Việt Nam hiện đại. Khác với các trò chơi mô phỏng thông thường, người chơi bước vào đời từ cột mốc **18 tuổi** vừa tốt nghiệp cấp 3, đối mặt với ngã rẽ đầu đời (Đại học, Học nghề, Đi làm ngay, Đi lính, XKLĐ), tự mình trải nghiệm hẹn hò yêu đương, vượt qua sóng gió chia tay, xây dựng hôn nhân và đồng hành nuôi dạy con cái suốt 18 năm khôn lớn.
 
 ---
 
-## ✨ Điểm nổi bật & Cải tiến
+## ✨ Điểm Nổi Bật
 
-1. **Bản sắc & Bối cảnh Việt Nam sâu sắc:**
-   - Dữ liệu 63 tỉnh thành & vùng miền, tỉ lệ sinh theo dân số thực tế.
-   - Đầy đủ 54 dân tộc anh em với tập quán và phong vị địa phương.
-   - Ký ức tuổi thơ gần gũi: thôi nôi bốc đồ vật, kẹo kéo, tò he, ném răng lên mái nhà, kết nạp Đội...
-   - Hệ thống thi cử Việt Nam: Kỳ thi vào lớp 10, Thi tốt nghiệp THPT & Đại học (Khối A, B, C, D...).
-   - Nghề nghiệp đa dạng: Từ công chức, công an, bác sĩ, giáo viên, shipper đến streamer, tuyển thủ esports, kỳ thủ cờ vua.
+1. **Hồ Sơ Xuất Phát Điểm Tuổi 18 Chân Thực:**
+   - Dữ liệu 63 tỉnh thành & 54 dân tộc Việt Nam.
+   - Hệ thống gia cảnh bố mẹ ngẫu nhiên với đầy đủ nơi công tác, chức vụ và bảng lương thực tế theo chuẩn thị trường Việt Nam.
+   - Học lực & Điểm thi tốt nghiệp THPT theo các khối thi truyền thống (Khối A, B, C, D, A1).
 
-2. **Cải tiến Công nghệ & Thị giác (Modern Tech Stack):**
-   - **Framework:** React 19 + TypeScript + Vite (siêu nhanh, an toàn kiểu dữ liệu).
-   - **Styling:** Tailwind CSS v4 với giao diện Glassmorphism / Dark Mode sang trọng, ấm cúng.
-   - **Avatar Generator:** Avatar khuôn mặt tự động biến đổi theo từng độ tuổi (sơ sinh, nhi đồng, thiếu niên, trưởng thành, lão niên).
-   - **Quản lý trạng thái:** Zustand Store dạng modular, dễ mở rộng và lưu trữ (Local Storage Autosave).
-   - **Biểu đồ & Hiệu ứng:** Theo dõi biến động tài chính/chỉ số cuộc đời trực quan.
+2. **Hệ Thống Nghệ Thuật & Giao Diện Cao Cấp:**
+   - Avatar Anime 2D nghệ thuật & Chế độ chuyển đổi Retro Pixel Art 16x16.
+   - Bộ sưu tập 5 chủ đề màu sắc cao cấp (*Huyền Vũ Hoàng Kim, Tử Cấm Thành, Trúc Lâm Thiền Tự, Hải Vân Dạ Nguyệt, Giấy Dó Thư Pháp*).
+   - Tối ưu hóa hoàn hảo cho cả máy tính và điện thoại.
+
+3. **Công Nghệ Hiện Đại:**
+   - React 19 + TypeScript + Vite.
+   - Tailwind CSS v4.
+   - Hệ thống kiểm duyệt thiết kế chuẩn mực với `UI/UX Pro Max` và `Impeccable`.
 
 ---
 
-## 🛠️ Cài đặt & Chạy cục bộ
+## 🛠️ Cài Đặt & Chạy Dự Án
 
 ```bash
-# Cài đặt thư viện
+# Cài đặt thư viện phụ thuộc
 npm install
 
-# Chạy môi trường phát triển (Dev server)
+# Khởi chạy môi trường phát triển (Dev server)
 npm run dev
 
 # Đóng gói xuất bản (Production build)
@@ -41,7 +40,5 @@ npm run build
 
 ---
 
-## 📜 Lời cảm ơn & Ghi nhận (Attribution)
-- Lấy cảm hứng từ thể loại Life Simulator và dự án [motdoi.site](https://motdoi.site/).
-- Sử dụng dữ liệu dân số tham khảo từ Tổng cục Thống kê Việt Nam (GSO) và tập dữ liệu mã nguồn mở `Nemotron-Personas-Vietnam` (CC BY 4.0).
+## 📜 Bản Quyền
 - Giấy phép: MIT License.

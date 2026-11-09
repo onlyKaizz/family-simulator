@@ -6,8 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kiếp Nhân Sinh – Game Mô Phỏng Cuộc Đời Việt Nam</title>
     <meta name="description" content="Trải nghiệm mô phỏng cuộc đời Việt Nam chân thực: sinh ra ngẫu nhiên, học tập, lập nghiệp, tình cảm, gia đình và tự định đoạt số phận." />
+    
+    <!-- Google Fonts: Be Vietnam Pro, Inter, Playfair Display with Vietnamese Subsets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" 
+      rel="stylesheet" 
+    />
+    <script>
+      try {
+        var t = localStorage.getItem('kns_active_theme') || 'midnight';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
   </head>
-  <body class="bg-slate-950 text-slate-100 min-h-screen">
+  <body class="bg-[#0a1520] text-[#f2e8d5] min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
