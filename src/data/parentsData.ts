@@ -330,40 +330,84 @@ export function generateParent(
   };
 }
 
-export function generateFamilyBackground(homeTown: string): FamilyBackground {
-  const familySurname = pickRandom(SURNAMES);
-  const statusRoll = Math.random();
+export type FilterCategory = 'all' | 'richest' | 'rural' | 'urban' | 'poor' | 'genius';
 
+export function generateFamilyBackground(
+  homeTown: string,
+  filter: FilterCategory = 'all'
+): FamilyBackground {
+  const familySurname = pickRandom(SURNAMES);
   let status: FamilyBackground['status'] = 'Trọn vẹn êm ấm';
   const parents: ParentProfile[] = [];
   let debt = 0;
 
-  if (statusRoll < 0.70) {
-    // 70%: Trọn vẹn êm ấm (Đủ Bố và Mẹ)
+  if (filter === 'poor') {
+    // Ép buộc hoàn cảnh khó khăn / nợ nần
+    status = Math.random() < 0.5 ? 'Trọn vẹn êm ấm' : 'Mẹ đơn thân';
+    if (status === 'Trọn vẹn êm ấm') {
+      parents.push(generateParent('Bố', familySurname, 'worker'));
+      parents.push(generateParent('Mẹ', familySurname, 'worker'));
+    } else {
+      parents.push(generateParent('Mẹ', familySurname, 'worker'));
+    }
+    if (Math.random() < 0.6) {
+      debt = randRange(80000000, 350000000, 10000000);
+    }
+  } else if (filter === 'richest') {
+    // Ép buộc gia cảnh thượng lưu / giàu có
     status = 'Trọn vẹn êm ấm';
-    parents.push(generateParent('Bố', familySurname));
-    parents.push(generateParent('Mẹ', familySurname));
-  } else if (statusRoll < 0.82) {
-    // 12%: Bố mẹ ly hôn (ở với Mẹ)
-    status = 'Mẹ đơn thân';
-    parents.push(generateParent('Mẹ', familySurname));
-  } else if (statusRoll < 0.90) {
-    // 8%: Mồ côi bố hoặc mẹ
-    status = 'Bố đơn thân';
-    parents.push(generateParent('Bố', familySurname));
-  } else if (statusRoll < 0.96) {
-    // 6%: Mồ côi ở với ông bà
-    status = 'Mồ côi ở với ông bà';
-    const grandPa = generateParent('Bố', familySurname, 'retired');
-    grandPa.name = `${familySurname} Văn Ông`;
-    grandPa.age = 70;
-    parents.push(grandPa);
+    // Bố giám đốc hoặc chủ doanh nghiệp lớn
+    const richTemplates = OCCUPATION_TEMPLATES.filter(t => t.maxIncome >= 60000000);
+    const dadTpl = pickRandom(richTemplates);
+    const dad = generateParent('Bố', familySurname);
+    dad.occupation = dadTpl.occupation;
+    dad.workplace = dadTpl.workplace;
+    dad.position = dadTpl.position;
+    dad.monthlyIncome = randRange(dadTpl.minIncome, dadTpl.maxIncome);
+    parents.push(dad);
+
+    const momTpl = pickRandom(OCCUPATION_TEMPLATES.filter(t => t.maxIncome >= 30000000));
+    const mom = generateParent('Mẹ', familySurname);
+    mom.occupation = momTpl.occupation;
+    mom.workplace = momTpl.workplace;
+    mom.position = momTpl.position;
+    mom.monthlyIncome = randRange(momTpl.minIncome, momTpl.maxIncome);
+    parents.push(mom);
+  } else if (filter === 'rural') {
+    // Nông thôn: làm nông, vườn tược hoặc tiểu thương chợ quê
+    status = 'Trọn vẹn êm ấm';
+    parents.push(generateParent('Bố', familySurname, 'agriculture'));
+    parents.push(generateParent('Mẹ', familySurname, Math.random() < 0.5 ? 'agriculture' : 'trade'));
+  } else if (filter === 'urban') {
+    // Thành thị: công sở, ngân hàng hoặc công ty tư nhân
+    status = 'Trọn vẹn êm ấm';
+    parents.push(generateParent('Bố', familySurname, 'corporate'));
+    parents.push(generateParent('Mẹ', familySurname, Math.random() < 0.5 ? 'corporate' : 'public'));
   } else {
-    // 4%: Vỡ nợ sa sút
-    status = 'Vỡ nợ sa sút';
-    parents.push(generateParent('Bố', familySurname, 'worker'));
-    parents.push(generateParent('Mẹ', familySurname, 'worker'));
-    debt = randRange(200000000, 800000000, 50000000);
+    // Ngẫu nhiên tiêu chuẩn
+    const statusRoll = Math.random();
+    if (statusRoll < 0.70) {
+      status = 'Trọn vẹn êm ấm';
+      parents.push(generateParent('Bố', familySurname));
+      parents.push(generateParent('Mẹ', familySurname));
+    } else if (statusRoll < 0.82) {
+      status = 'Mẹ đơn thân';
+      parents.push(generateParent('Mẹ', familySurname));
+    } else if (statusRoll < 0.90) {
+      status = 'Bố đơn thân';
+      parents.push(generateParent('Bố', familySurname));
+    } else if (statusRoll < 0.96) {
+      status = 'Mồ côi ở với ông bà';
+      const grandPa = generateParent('Bố', familySurname, 'retired');
+      grandPa.name = `${familySurname} Văn Ông`;
+      grandPa.age = 70;
+      parents.push(grandPa);
+    } else {
+      status = 'Vỡ nợ sa sút';
+      parents.push(generateParent('Bố', familySurname, 'worker'));
+      parents.push(generateParent('Mẹ', familySurname, 'worker'));
+      debt = randRange(200000000, 800000000, 50000000);
+    }
   }
 
   const totalMonthlyIncome = parents.reduce((sum, p) => sum + (p.alive ? p.monthlyIncome : 0), 0);
@@ -392,7 +436,7 @@ export function generateFamilyBackground(homeTown: string): FamilyBackground {
   } else if (tier === 'Khá giả trung lưu') {
     summaryText = 'Gia cảnh khá giả, nếp nhà nề nếp; tài chính ổn định sẵn sàng chu cấp học đại học hoặc hỗ trợ nghề nghiệp tương lai.';
   } else {
-    summaryText = 'Gia đình bề thế giàu có, tiền bạc không phải là nỗi lo; bố mẹ có vị thế xã hội cao và kỳ vọng rất lớn vào sự nghiệp của bạn.';
+    summaryText = 'Nhà rất dư dả, tiền sinh hoạt ít khi là nỗi lo; bố ấm áp, mẹ bao bọc; có anh chị em cùng lớn lên, vừa có bạn vừa phải học cách nhường nhịn.';
   }
 
   return {

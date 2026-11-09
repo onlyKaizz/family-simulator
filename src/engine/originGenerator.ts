@@ -1,16 +1,16 @@
 import type { 
   Character, Gender, Talent, HighSchoolRecord, PathBranchOption 
 } from '../types/game';
-import { generateFamilyBackground } from '../data/parentsData';
+import { generateFamilyBackground, type FilterCategory } from '../data/parentsData';
 import { SURNAMES, MALE_GIVEN_NAMES, FEMALE_GIVEN_NAMES, MALE_MIDDLE_NAMES, FEMALE_MIDDLE_NAMES } from '../data/names';
 import { PROVINCES } from '../data/provinces';
 import { ETHNICITIES } from '../data/ethnicities';
 
 const TALENTS: Talent[] = [
+  'Khéo tay kỹ thuật',
   'Logic toán học',
   'Ngoại ngữ',
   'Giao tiếp thuyết phục',
-  'Khéo tay kỹ thuật',
   'Nghệ thuật & Âm nhạc',
   'Thể lực & Vận động',
   'Kinh doanh nhạy bén'
@@ -20,13 +20,31 @@ function pickRandom<T>(list: T[]): T {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-export function generate18yoCharacter(preferredGender?: Gender): Character {
+export interface CharacterGeneratorOptions {
+  preferredGender?: Gender;
+  filterOption?: FilterCategory;
+}
+
+export function generate18yoCharacter(options?: CharacterGeneratorOptions): Character {
+  const preferredGender = options?.preferredGender;
+  const filterOption: FilterCategory = options?.filterOption || 'all';
+
   const gender: Gender = preferredGender || (Math.random() < 0.5 ? 'male' : 'female');
   const isMale = gender === 'male';
 
-  const provinceObj = pickRandom(PROVINCES);
-  const homeTown = provinceObj.name;
-  const family = generateFamilyBackground(homeTown);
+  // Chọn tỉnh thành dựa vào filter
+  let homeTown = '';
+  if (filterOption === 'rural') {
+    const ruralProvinces = ['Nam Định', 'Thái Bình', 'Bến Tre', 'Đồng Tháp', 'Đắk Lắk', 'Lâm Đồng', 'Quảng Nam', 'An Giang', 'Ninh Bình'];
+    homeTown = pickRandom(ruralProvinces);
+  } else if (filterOption === 'urban' || filterOption === 'richest') {
+    const urbanProvinces = ['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ'];
+    homeTown = pickRandom(urbanProvinces);
+  } else {
+    homeTown = pickRandom(PROVINCES).name;
+  }
+
+  const family = generateFamilyBackground(homeTown, filterOption);
 
   // Họ lấy theo họ của Bố nếu có, hoặc random
   const father = family.parents.find(p => p.role === 'Bố');
@@ -40,25 +58,30 @@ export function generate18yoCharacter(preferredGender?: Gender): Character {
   const ethnicity = ethRoll < 0.88 ? 'Kinh' : pickRandom(ETHNICITIES).name;
 
   // Học lực & Điểm thi tốt nghiệp THPT
-  const scoreRoll = Math.random();
   let academicTier: HighSchoolRecord['academicTier'] = 'Khá';
   let graduationScore = 21.5;
 
-  if (scoreRoll < 0.15) {
+  if (filterOption === 'genius') {
     academicTier = 'Xuất sắc';
-    graduationScore = +(26.5 + Math.random() * 3).toFixed(1); // 26.5 - 29.5
-  } else if (scoreRoll < 0.45) {
-    academicTier = 'Giỏi';
-    graduationScore = +(23.5 + Math.random() * 2.8).toFixed(1); // 23.5 - 26.3
-  } else if (scoreRoll < 0.80) {
-    academicTier = 'Khá';
-    graduationScore = +(19.0 + Math.random() * 4).toFixed(1); // 19.0 - 23.0
-  } else if (scoreRoll < 0.95) {
-    academicTier = 'Trung bình';
-    graduationScore = +(15.0 + Math.random() * 3.8).toFixed(1); // 15.0 - 18.8
+    graduationScore = +(27.5 + Math.random() * 2.2).toFixed(1);
   } else {
-    academicTier = 'Kém';
-    graduationScore = +(11.0 + Math.random() * 3.5).toFixed(1); // 11.0 - 14.5
+    const scoreRoll = Math.random();
+    if (scoreRoll < 0.15) {
+      academicTier = 'Xuất sắc';
+      graduationScore = +(26.5 + Math.random() * 3).toFixed(1); // 26.5 - 29.5
+    } else if (scoreRoll < 0.45) {
+      academicTier = 'Giỏi';
+      graduationScore = +(23.5 + Math.random() * 2.8).toFixed(1); // 23.5 - 26.3
+    } else if (scoreRoll < 0.80) {
+      academicTier = 'Khá';
+      graduationScore = +(19.0 + Math.random() * 4).toFixed(1); // 19.0 - 23.0
+    } else if (scoreRoll < 0.95) {
+      academicTier = 'Trung bình';
+      graduationScore = +(15.0 + Math.random() * 3.8).toFixed(1); // 15.0 - 18.8
+    } else {
+      academicTier = 'Kém';
+      graduationScore = +(11.0 + Math.random() * 3.5).toFixed(1); // 11.0 - 14.5
+    }
   }
 
   const subjectGroup = pickRandom<HighSchoolRecord['subjectGroup']>([
@@ -75,6 +98,11 @@ export function generate18yoCharacter(preferredGender?: Gender): Character {
     subjectGroup,
     conduct: academicTier === 'Kém' ? 'Khá' : 'Tốt'
   };
+
+  // Năng khiếu
+  const talent: Talent = filterOption === 'genius' 
+    ? pickRandom<Talent>(['Logic toán học', 'Ngoại ngữ']) 
+    : pickRandom(TALENTS);
 
   // Tiền túi cá nhân tuổi 18 tùy theo tầng lớp
   let personalCash = 1500000;
@@ -93,7 +121,7 @@ export function generate18yoCharacter(preferredGender?: Gender): Character {
     alive: true,
     province: homeTown,
     ethnicity,
-    talent: pickRandom(TALENTS),
+    talent,
     stats: {
       health: 80 + Math.floor(Math.random() * 18),
       smarts: academicTier === 'Xuất sắc' ? 88 : academicTier === 'Giỏi' ? 78 : academicTier === 'Khá' ? 68 : 55,
